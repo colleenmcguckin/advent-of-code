@@ -1,3 +1,4 @@
+require 'pry'
 class ChronalCalibration
   RAW_INPUT = "-8
               -18
@@ -1034,6 +1035,33 @@ class ChronalCalibration
       changes.reduce(:+)
     end
 
+    def find_first_duplicate_frequency(frequency_changes)
+      changes = parse_changes(frequency_changes)
+      # take the first two elements and add them
+      # make that number a key in a hash pointing at true
+      # take the result and add the next number in the changes to it
+      # see if that number is in the hash
+      # # add it if it isn't
+      # # break if it is
+
+      frequencies = {}
+      frequency = changes[0..1].sum
+      frequencies[frequency] = true
+      duplicate_frequency = nil
+      changes = changes.rotate(2)
+      loop do
+        frequency = frequency + changes[0]
+
+        if frequencies[frequency]
+          break
+        else
+          frequencies[frequency] = true
+        end
+        changes = changes.rotate
+      end
+      frequency
+    end
+
     private
 
     def parse_changes(changes)
@@ -1043,4 +1071,5 @@ class ChronalCalibration
 
 end
 
-puts ChronalCalibration.find_frequency(ChronalCalibration::RAW_INPUT)
+# puts ChronalCalibration.find_frequency(ChronalCalibration::RAW_INPUT)
+puts ChronalCalibration.find_first_duplicate_frequency(ChronalCalibration::RAW_INPUT)
